@@ -2,7 +2,7 @@
 
 김종원 (Jongweon Kim) · Unity 게임 클라이언트 개발자 포트폴리오
 
-🔗 **https://dhdlqns12.github.io**
+🔗 **[https://dhdlqns12.github.io](https://dhdlqns12.github.io/Portfolio/)**
 
 ## 프로젝트
 - **MadRaccoon** — 차량 디펜스 로그라이트 (출시 → 라이브)
