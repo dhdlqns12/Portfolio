@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>김종원 · Unity 게임 클라이언트 개발자 포트폴리오</title>
+
+<style>
+  :root {
+    /* light (default) */
+    --bg: #F4F6F8;
+    --bg-2: #EDF0F3;
+    --card: #FFFFFF;
+    --border: #E1E5EA;
+    --border-soft: #EAEDF1;
+    --fg: #161C24;
+    --fg-dim: #55606D;
+    --fg-faint: #8791A0;
+    --accent: #E3A02C;        /* gold fill */
+    --accent-text: #99680C;   /* readable gold on light */
+    --accent-soft: #FBF1DC;
+    --wd: #1F8FA3;            /* WiggleDefender signature */
+    --wd-soft: #E1F1F4;
+    --mr: #C55E23;           /* MadRaccoon signature */
+    --mr-soft: #FBEBE0;
+    --hue: #6D46D9;          /* Project A: Hue signature */
+    --hue-soft: #ECE7FB;
+    --good: #2E9C60;
+    --good-soft: #E4F3EA;
+    --shadow: 0 1px 2px rgba(20,28,40,.04), 0 8px 24px rgba(20,28,40,.06);
+    --grid-line: rgba(22,28,36,.04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0C0F15;
+      --bg-2: #10141B;
+      --card: #141A23;
+      --border: #232C38;
+      --border-soft: #1A222C;
+      --fg: #E7EDF4;
+      --fg-dim: #9DAAB8;
+      --fg-faint: #66727F;
+      --accent: #F5B84C;
+      --accent-text: #F7C568;
+      --accent-soft: #241B0C;
+      --wd: #5BC9D8;
+      --wd-soft: #10222633;
+      --mr: #F0864A;
+      --mr-soft: #2A160A66;
+      --hue: #A78BFA;
+      --hue-soft: #241C3F66;
+      --good: #56C98A;
+      --good-soft: #0F241966;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px rgba(0,0,0,.35);
+      --grid-line: rgba(255,255,255,.035);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #F4F6F8; --bg-2: #EDF0F3; --card: #FFFFFF; --border: #E1E5EA; --border-soft: #EAEDF1;
+    --fg: #161C24; --fg-dim: #55606D; --fg-faint: #8791A0;
+    --accent: #E3A02C; --accent-text: #99680C; --accent-soft: #FBF1DC;
+    --wd: #1F8FA3; --wd-soft: #E1F1F4; --mr: #C55E23; --mr-soft: #FBEBE0;
+    --hue: #6D46D9; --hue-soft: #ECE7FB;
+    --good: #2E9C60; --good-soft: #E4F3EA;
+    --shadow: 0 1px 2px rgba(20,28,40,.04), 0 8px 24px rgba(20,28,40,.06);
+    --grid-line: rgba(22,28,36,.04);
+  }
+  :root[data-theme="dark"] {
+    --bg: #0C0F15; --bg-2: #10141B; --card: #141A23; --border: #232C38; --border-soft: #1A222C;
+    --fg: #E7EDF4; --fg-dim: #9DAAB8; --fg-faint: #66727F;
+    --accent: #F5B84C; --accent-text: #F7C568; --accent-soft: #241B0C;
+    --wd: #5BC9D8; --wd-soft: #10222633; --mr: #F0864A; --mr-soft: #2A160A66;
+    --hue: #A78BFA; --hue-soft: #241C3F66;
+    --good: #56C98A; --good-soft: #0F241966;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px rgba(0,0,0,.35);
+    --grid-line: rgba(255,255,255,.035);
+  }
+
+  * { box-sizing: border-box; }
+
+  :root {
+    --sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+            "Apple SD Gothic Neo", "Segoe UI", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+    --mono: ui-monospace, "Cascadia Code", "Cascadia Mono", "SFMono-Regular",
+            Consolas, "Liberation Mono", Menlo, monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--sans);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    background-image:
+      radial-gradient(1100px 520px at 82% -8%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 60%),
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: auto, 40px 40px, 40px 40px;
+    background-attachment: fixed, fixed, fixed;
+  }
+
+  .wrap {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- shared type ---------- */
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: .70rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+    margin: 0;
+  }
+  .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+  a { color: var(--accent-text); text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  /* ---------- hero ---------- */
+  header.hero { padding: 76px 0 40px; }
+  .hero-top {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 26px;
+  }
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--good);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--good) 22%, transparent);
+    flex: none;
+  }
+  .hero h1 {
+    font-size: clamp(2.4rem, 6.4vw, 3.7rem);
+    line-height: 1.04;
+    letter-spacing: -.025em;
+    font-weight: 800;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .hero h1 .en {
+    display: block;
+    font-family: var(--mono);
+    font-size: clamp(.8rem, 2.2vw, 1rem);
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+    font-weight: 600;
+    margin-top: 14px;
+  }
+  .role {
+    font-size: clamp(1.05rem, 2.6vw, 1.3rem);
+    color: var(--accent-text);
+    font-weight: 700;
+    margin: 20px 0 0;
+  }
+  .pitch {
+    font-size: clamp(1rem, 2.4vw, 1.16rem);
+    color: var(--fg-dim);
+    max-width: 60ch;
+    margin: 14px 0 0;
+    text-wrap: pretty;
+  }
+  .contacts {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-top: 28px;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--card);
+    font-family: var(--mono);
+    font-size: .8rem;
+    color: var(--fg-dim);
+    box-shadow: var(--shadow);
+    transition: transform .15s ease, border-color .15s ease, color .15s ease;
+  }
+  .chip:hover { transform: translateY(-2px); border-color: var(--accent); color: var(--fg); text-decoration: none; }
+  .chip .k { color: var(--fg-faint); }
+  .placeholder { color: var(--accent-text); background: var(--accent-soft); padding: 0 5px; border-radius: 4px; }
+
+  /* ---------- metrics ---------- */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 40px 0 12px;
+  }
+  .metric {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 18px;
+    box-shadow: var(--shadow);
+  }
+  .metric .num {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(1.7rem, 4.5vw, 2.3rem);
+    font-weight: 700;
+    letter-spacing: -.02em;
+    color: var(--accent-text);
+    line-height: 1;
+  }
+  .metric .lbl { margin-top: 8px; font-size: .82rem; color: var(--fg-dim); }
+
+  /* exhibitions */
+  .exhibits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .exhibit {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 20px 20px 22px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: transform .15s ease, border-color .15s ease;
+  }
+  .exhibit:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .exhibit::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 4px; background: var(--accent);
+  }
+  .ex-when { margin: 0; font-family: var(--mono); font-size: .74rem; letter-spacing: .03em; color: var(--fg-faint); }
+  .ex-name { margin: 7px 0 0; font-size: 1.16rem; font-weight: 800; letter-spacing: -.01em; }
+  .ex-note { margin: 6px 0 0; font-size: .85rem; color: var(--fg-dim); }
+
+  /* ---------- section ---------- */
+  section { padding: 48px 0; }
+  .section-head { margin-bottom: 26px; }
+  .section-head h2 {
+    font-size: clamp(1.4rem, 3.4vw, 1.95rem);
+    letter-spacing: -.02em;
+    font-weight: 800;
+    margin: 6px 0 0;
+    text-wrap: balance;
+  }
+
+  /* capability grid */
+  .caps { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .cap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+  .cap h3 { margin: 0 0 6px; font-size: 1.02rem; font-weight: 700; }
+  .cap p { margin: 0; color: var(--fg-dim); font-size: .93rem; }
+
+  .stack {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 22px;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: .76rem;
+    padding: 5px 11px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+    color: var(--fg-dim);
+  }
+
+  /* ---------- project ---------- */
+  .project {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 30px 28px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .project + .project { margin-top: 22px; }
+  .project::before {
+    content: "";
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--sig, var(--accent));
+  }
+  .project.wd { --sig: var(--wd); --sig-soft: var(--wd-soft); }
+  .project.mr { --sig: var(--mr); --sig-soft: var(--mr-soft); }
+  .project.hue { --sig: var(--hue); --sig-soft: var(--hue-soft); }
+
+  .p-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; }
+  .p-title {
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: clamp(1.25rem, 3.4vw, 1.7rem);
+    letter-spacing: .01em;
+    color: var(--fg);
+    margin: 0;
+  }
+  .p-title .dot {
+    display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+    background: var(--sig); margin-right: 10px; vertical-align: middle;
+  }
+  .genre {
+    font-size: .78rem;
+    padding: 4px 11px;
+    border-radius: 999px;
+    background: var(--sig-soft);
+    color: var(--sig);
+    border: 1px solid color-mix(in srgb, var(--sig) 30%, transparent);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .p-meta {
+    display: flex; flex-wrap: wrap; gap: 8px 18px;
+    margin: 16px 0 0;
+    font-family: var(--mono);
+    font-size: .8rem;
+    color: var(--fg-faint);
+  }
+  .p-meta b { color: var(--fg-dim); font-weight: 600; }
+  .p-lead {
+    margin: 16px 0 4px;
+    color: var(--fg-dim);
+    font-size: .98rem;
+    max-width: 66ch;
+  }
+
+  .contrib-title, .trouble-title {
+    font-family: var(--mono);
+    font-size: .7rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--fg-faint);
+    margin: 26px 0 12px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border-soft);
+  }
+  .contribs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .contrib {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 15px 16px;
+    background: var(--bg-2);
+  }
+  .contrib h4 {
+    margin: 0 0 5px; font-size: .95rem; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .contrib h4::before {
+    content: ""; width: 6px; height: 6px; border-radius: 2px;
+    background: var(--sig); flex: none;
+  }
+  .contrib p { margin: 0; font-size: .86rem; color: var(--fg-dim); }
+
+  .trouble {
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--good);
+    border-radius: 12px;
+    background: var(--good-soft);
+    padding: 15px 17px;
+  }
+  .trouble + .trouble { margin-top: 10px; }
+  .trouble .sym { font-weight: 700; font-size: .92rem; }
+  .trouble .fix { margin: 6px 0 0; font-size: .88rem; color: var(--fg-dim); }
+  .trouble .fix b { color: var(--good); font-family: var(--mono); font-size: .78rem; letter-spacing: .04em; }
+
+  /* ---------- footer ---------- */
+  footer {
+    padding: 46px 0 70px;
+    border-top: 1px solid var(--border-soft);
+    margin-top: 20px;
+  }
+  .foot-row { display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; justify-content: space-between; }
+  footer .note { font-family: var(--mono); font-size: .74rem; color: var(--fg-faint); }
+
+  /* ---------- reveal ---------- */
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .chip, .metric { transition: none; }
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 720px) {
+    .metrics { grid-template-columns: 1fr; }
+    .exhibits { grid-template-columns: 1fr; }
+    .caps { grid-template-columns: 1fr; }
+    .contribs { grid-template-columns: 1fr; }
+    header.hero { padding: 52px 0 30px; }
+    .project { padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <div class="hero-top">
+      <span class="status-dot" aria-hidden="true"></span>
+      <p class="eyebrow">Portfolio · Game Client Engineer · Live Service</p>
+    </div>
+
+    <h1>
+      김종원
+      <span class="en">Jongweon Kim — Unity Client Developer</span>
+    </h1>
+
+    <p class="role">Unity 게임 클라이언트 개발자</p>
+    <p class="pitch">
+      출시부터 라이브 운영까지 — 두 라이브 서비스를 만들고, 팀장으로 이끈 프로젝트를
+      지스타·PlayX4 무대에 올린 Unity 게임 클라이언트 개발자입니다.
+      이벤트·가챠·랭킹 같은 라이브 콘텐츠 개발과, 세이브 데이터 정합성·성능·버그픽스로
+      운영을 지탱하는 일을 함께 합니다.
+    </p>
+
+    <div class="contacts">
+      <a class="chip" href="mailto:dhdlqns12@gmail.com"><span class="k">✉</span> dhdlqns12@gmail.com</a>
+      <a class="chip" href="https://github.com/dhdlqns12"><span class="k">GitHub</span> github.com/dhdlqns12</a>
+    </div>
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="num">3</div>
+        <div class="lbl">참여 프로젝트 (출시 · 라이브 · 팀 리드)</div>
+      </div>
+      <div class="metric">
+        <div class="num">3<span style="font-size:.6em">회</span></div>
+        <div class="lbl">박람회 출품 · 시연 (지스타 · PlayX4)</div>
+      </div>
+      <div class="metric">
+        <div class="num">1,100<span style="font-size:.6em">+</span></div>
+        <div class="lbl">세 프로젝트 누적 커밋</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ 핵심 역량 ============ -->
+  <section id="about" class="reveal">
+    <div class="section-head">
+      <p class="eyebrow">About</p>
+      <h2>핵심 역량</h2>
+    </div>
+
+    <div class="caps">
+      <div class="cap">
+        <h3>라이브 서비스 운영</h3>
+        <p>운영 중인 서비스에 투입되어 신규 콘텐츠 업데이트, 핫픽스, CS 대응, QA를 담당. 유저에게 나가는 빌드의 안정성을 책임집니다.</p>
+      </div>
+      <div class="cap">
+        <h3>라이브 콘텐츠 개발</h3>
+        <p>가챠·이벤트·랭킹·던전 모드·스킨 등 매출과 리텐션에 직결되는 라이브 콘텐츠를 UI/로직/데이터까지 엔드투엔드로 구현합니다.</p>
+      </div>
+      <div class="cap">
+        <h3>세이브 · 데이터 정합성</h3>
+        <p>세이브 데이터 마이그레이션, 서버 저장 동기화, 스키마 변경에 따른 데이터 정화 등 "숫자가 틀어지면 안 되는" 영역을 다룹니다.</p>
+      </div>
+      <div class="cap">
+        <h3>성능 · 구조 개선</h3>
+        <p>리소스 로드 병렬화, Addressable 전환, 유닛 로직 스로틀링 등 라이브 환경의 성능·유지보수성 개선을 진행합니다.</p>
+      </div>
+    </div>
+
+    <div class="stack" aria-label="기술 스택">
+      <span class="tag">Unity 6</span>
+      <span class="tag">C#</span>
+      <span class="tag">UniTask</span>
+      <span class="tag">Addressables</span>
+      <span class="tag">DOTween</span>
+      <span class="tag">ScriptableObject</span>
+      <span class="tag">FSM</span>
+      <span class="tag">Object Pooling</span>
+      <span class="tag">Google Sheet 데이터 파이프라인</span>
+      <span class="tag">IAP</span>
+      <span class="tag">Git / GitHub</span>
+    </div>
+  </section>
+
+  <!-- ============ 전시 · 박람회 ============ -->
+  <section id="exhibitions" class="reveal">
+    <div class="section-head">
+      <p class="eyebrow">Exhibitions</p>
+      <h2>전시 · 박람회</h2>
+    </div>
+    <div class="exhibits">
+      <div class="exhibit">
+        <p class="ex-when">2023.11 · 부산 벡스코</p>
+        <h3 class="ex-name">지스타 2023</h3>
+        <p class="ex-note">게임 출품 · 현장 시연</p>
+      </div>
+      <div class="exhibit">
+        <p class="ex-when">2024.05 · 킨텍스</p>
+        <h3 class="ex-name">PlayX4 2024</h3>
+        <p class="ex-note">게임 출품 · 현장 시연</p>
+      </div>
+      <div class="exhibit">
+        <p class="ex-when">2024.11 · 부산 벡스코</p>
+        <h3 class="ex-name">지스타 2024</h3>
+        <p class="ex-note">게임 출품 · 현장 시연</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROJECTS ============ -->
+  <section id="projects" class="reveal">
+    <div class="section-head">
+      <p class="eyebrow">Work</p>
+      <h2>프로젝트</h2>
+    </div>
+
+    <!-- ---- MadRaccoon ---- -->
+    <article class="project mr">
+      <div class="p-head">
+        <h3 class="p-title"><span class="dot" aria-hidden="true"></span>MadRaccoon</h3>
+        <span class="genre">차량 디펜스 로그라이트</span>
+      </div>
+      <div class="p-meta">
+        <span><b>기간</b> 2026.05 – 현재</span>
+        <span><b>역할</b> 출시 참여 → 라이브 전환 · 핫픽스 &amp; 개선</span>
+        <span><b>기여</b> 858 커밋 · 전체 2위</span>
+      </div>
+      <p class="p-lead">
+        출시 단계에 합류해 빌드 안정화를 거쳐 라이브로 전환한 프로젝트입니다.
+        던전 모드·랭킹·라이브 이벤트 같은 신규 콘텐츠 개발과, 출시/라이브 과정에서
+        발생한 데이터·플로우 버그의 핫픽스를 폭넓게 담당했습니다.
+      </p>
+
+      <p class="contrib-title">주요 기여</p>
+      <div class="contribs">
+        <div class="contrib">
+          <h4>던전 모드 2종 개발</h4>
+          <p>보스 레이드형·층 등반형 던전 구현 — 보스 배치, 무기 5종 로드아웃 편성, 카드 선택, 층 진행 로직.</p>
+        </div>
+        <div class="contrib">
+          <h4>랭킹 시스템</h4>
+          <p>두 던전 모드의 랭킹 UI. 상위 3위 슬롯에만 사용 무기 6종·선택 카드 노출(4위 이하 미표시), 슬롯 클릭 시 카드 정보 팝업.</p>
+        </div>
+        <div class="contrib">
+          <h4>한정 라이브 이벤트 4종</h4>
+          <p>가챠 스핀형·누적 보상형·크래프팅형 등 한정 이벤트 4종 개발. 시즌별 상품 필터, 레드닷, 튜토리얼, 확률 표시까지 구현.</p>
+        </div>
+        <div class="contrib">
+          <h4>Trial(체험) 시스템</h4>
+          <p>이벤트 타겟 상품 체험 진입/복귀 라우팅과 <span class="mono">ITrialTargetProvider</span> 인터페이스 설계.</p>
+        </div>
+        <div class="contrib">
+          <h4>유닛 · 몬스터</h4>
+          <p>범퍼카(자폭 크리티컬)·박격포 정예(지연 타격) 구현, Snake 체인 몬스터 아트 정렬.</p>
+        </div>
+        <div class="contrib">
+          <h4>상점 · BM</h4>
+          <p>특가상점 로비 연동, 첫 구매 보상 팝업의 상점 이동·claim 갱신·레드닷 즉시 반영.</p>
+        </div>
+      </div>
+
+      <p class="trouble-title">대표 트러블슈팅</p>
+      <div class="trouble">
+        <div class="sym">앱 재시작을 반복하면 스태미나가 기본값 30으로 부활하던 재화 악용 문제</div>
+        <p class="fix"><b>원인·조치 →</b> 값이 0인 스태미나가 저장에서 스킵돼 로드 시 키가 사라지고, 초기화 로직이 기본값 30을 다시 부여함. 0값도 명시 저장하도록 보강해 재시작 무한 파밍을 차단.</p>
+      </div>
+      <div class="trouble">
+        <div class="sym">일시정지 후 나가기 시 레벨업 카드 선택 UI가 계속 뜨던 CS</div>
+        <p class="fix"><b>원인·조치 →</b> 게임오버 강제 종료가 상태 플래그만 직접 꺼, 종료 메시지가 발행되지 않아 정리 로직이 생략되고 뒤늦게 도착한 레벨업 메시지가 스테이지 상태를 되살림. 정식 종료 경로로 메시지 발행·상태 동기화를 함께 보장해 해결.</p>
+      </div>
+    </article>
+
+    <!-- ---- WiggleDefender ---- -->
+    <article class="project wd">
+      <div class="p-head">
+        <h3 class="p-title"><span class="dot" aria-hidden="true"></span>WiggleDefender</h3>
+        <span class="genre">유닛 타워 디펜스</span>
+      </div>
+      <div class="p-meta">
+        <span><b>기간</b> 2026.05 – 현재 (라이브)</span>
+        <span><b>역할</b> 유지보수 · 업데이트 · CS 대응 · 버그픽스 · QA</span>
+        <span><b>기여</b> 150 커밋</span>
+      </div>
+      <p class="p-lead">
+        운영 중인 서비스에 투입되어 신규 콘텐츠와 안정화·성능 개선을 담당했습니다.
+        모드 개편에 따른 세이브 데이터 마이그레이션처럼 라이브에서 리스크가 큰 작업과,
+        스킨·이벤트 같은 업데이트 콘텐츠를 함께 진행했습니다.
+      </p>
+
+      <p class="contrib-title">주요 기여</p>
+      <div class="contribs">
+        <div class="contrib">
+          <h4>핵심 스테이지 모드 개편</h4>
+          <p>스테이지 수 축소(50→30) 개편에 따른 세이브 데이터 오염 정화·재추첨, 라운드 승패 로직 단일화, 유닛 스케일 조정.</p>
+        </div>
+        <div class="contrib">
+          <h4>스킨 시스템</h4>
+          <p>영웅·해병 스킨(디바·카우보이·조로 닌자 등)과 스킨 스킬 3종 장착·세이브 통합 마이그레이션, 스킨 전용 스킬 구현.</p>
+        </div>
+        <div class="contrib">
+          <h4>크래프팅형 이벤트 이식</h4>
+          <p>타 프로젝트의 크래프팅형 라이브 이벤트를 컨베이어 시퀀스·진척도 보상·세이브·IAP 결선까지 포팅.</p>
+        </div>
+        <div class="contrib">
+          <h4>성능 · 리소스</h4>
+          <p>프로필 아이콘/프레임 스프라이트 로드 배치 병렬화, Resources → Addressable 리소스 이관.</p>
+        </div>
+      </div>
+
+      <p class="trouble-title">대표 트러블슈팅</p>
+      <div class="trouble">
+        <div class="sym">테이블 로드 전 이벤트 시즌이 준비돼 무효값이 세이브에 굳던 버그</div>
+        <p class="fix"><b>원인·조치 →</b> 데이터 미로드 상태에서 시즌 준비가 실행돼, 빈 시퀀스의 무효 인덱스(-1)가 세이브에 영속화되며 이벤트가 깨짐. 데이터 미로드·빈 시퀀스 가드를 추가해 무효값 저장을 막고 다음 틱에 재시도하도록 수정.</p>
+      </div>
+      <div class="trouble">
+        <div class="sym">무기 스킨의 인게임 총 스프라이트가 표시되지 않던 문제</div>
+        <p class="fix"><b>원인·조치 →</b> 스프라이트의 내부 이름(.meta)이 파일명과 달라 이름 기반 인게임 매칭이 실패. 스프라이트 이름을 파일명과 일치시켜 해결.</p>
+      </div>
+    </article>
+
+    <!-- ---- Project A: Hue ---- -->
+    <article class="project hue">
+      <div class="p-head">
+        <h3 class="p-title"><span class="dot" aria-hidden="true"></span>Project A : Hue</h3>
+        <span class="genre">오토배틀러 + 머지 · 모바일</span>
+      </div>
+      <div class="p-meta">
+        <span><b>기간</b> 2025.12 – 2026.01</span>
+        <span><b>팀</b> 4인 · <b>역할</b> 팀장 (Team Lead)</span>
+        <span><b>담당</b> 유닛 시스템 · 성장 콘텐츠</span>
+      </div>
+      <p class="p-lead">
+        스타크래프트 '데저트 스트라이크'에서 착안한 오토배틀러+머지 모바일 게임.
+        4인 팀의 팀장으로 프로젝트를 이끌며, 인게임 전투의 핵심인 유닛 시스템을 전담했습니다.
+      </p>
+
+      <p class="contrib-title">주요 기여</p>
+      <div class="contribs">
+        <div class="contrib">
+          <h4>유닛 전투 시스템</h4>
+          <p>FSM 기반 유닛 생성·이동·전투·스킬 구현. 이동 AI, 유닛 플립, 넥서스 공방 로직.</p>
+        </div>
+        <div class="contrib">
+          <h4>성능 최적화</h4>
+          <p>유닛 오브젝트 풀링(동시 100개 제한)으로 대량 유닛의 생성·반환을 안정적으로 처리.</p>
+        </div>
+        <div class="contrib">
+          <h4>스킬 · 데이터</h4>
+          <p>UnitSkillData enum·테이블화로 스킬 데이터를 구조화하고 스킬 시스템에 연결.</p>
+        </div>
+        <div class="contrib">
+          <h4>데이터 파이프라인 툴 제작</h4>
+          <p>기획 데이터 시트를 게임용 JSON으로 변환하는 독립 실행형(.exe) 툴을 직접 제작(ver3까지 개선). 스킬·유닛 데이터 테이블 갱신 파이프라인에 사용. <a href="https://github.com/dhdlqns12/SheetToJsonConverter" target="_blank" rel="noopener">↗ 저장소</a></p>
+        </div>
+        <div class="contrib">
+          <h4>성장 콘텐츠</h4>
+          <p>일일·반복 미션, 업적, 크리스탈 재화 연동, 튜토리얼 시스템 구현.</p>
+        </div>
+        <div class="contrib">
+          <h4>이벤트 기반 구조</h4>
+          <p>덱 리스트 pub/sub 발행 등 매니저 간 결합을 이벤트로 낮춰 유지보수성 확보.</p>
+        </div>
+        <div class="contrib">
+          <h4>팀 리드</h4>
+          <p>4인 팀장으로 시스템 설계·역할 분배·통합을 주도, 7주 만에 플레이 가능한 빌드 완성.</p>
+        </div>
+      </div>
+
+      <p class="trouble-title">대표 트러블슈팅</p>
+      <div class="trouble">
+        <div class="sym">3배속에서 유닛 사망 처리 중 발생하던 코루틴 오류</div>
+        <p class="fix"><b>원인·조치 →</b> 배속·정지 상태에서 비활성 오브젝트로 사망 코루틴을 시작하려다 오류 발생. 코루틴 시작 전 타임스케일·오브젝트 활성 상태를 가드해 방지.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="reveal">
+    <div class="foot-row">
+      <div class="contacts" style="margin:0;">
+        <a class="chip" href="mailto:dhdlqns12@gmail.com"><span class="k">✉</span> dhdlqns12@gmail.com</a>
+        <a class="chip" href="https://github.com/dhdlqns12"><span class="k">GitHub</span> github.com/dhdlqns12</a>
+      </div>
+      <p class="note">© <span id="yr">2026</span> Jongweon Kim · Built with GitHub Pages</p>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    var y = document.getElementById('yr');
+    if (y) y.textContent = new Date().getFullYear();
+
+    var reveals = document.querySelectorAll('.reveal');
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || !('IntersectionObserver' in window)) {
+      reveals.forEach(function (el) { el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(function (el) { io.observe(el); });
+  })();
+</script>
+
+</body>
+</html>
