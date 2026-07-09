@@ -233,6 +233,33 @@
   .ex-name { margin: 7px 0 0; font-size: 1.16rem; font-weight: 800; letter-spacing: -.01em; }
   .ex-note { margin: 6px 0 0; font-size: .85rem; color: var(--fg-dim); }
 
+  /* experience */
+  .exp { display: flex; flex-direction: column; gap: 14px; }
+  .exp-item {
+    display: grid;
+    grid-template-columns: 148px 1fr;
+    gap: 20px;
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px 22px 26px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .exp-item::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 4px; background: var(--accent);
+  }
+  .exp-when {
+    font-family: var(--mono); font-size: .82rem; letter-spacing: .02em;
+    color: var(--fg-faint); font-variant-numeric: tabular-nums; padding-top: 3px;
+  }
+  .exp-role { margin: 0; font-size: 1.12rem; font-weight: 800; letter-spacing: -.01em; }
+  .exp-org { margin: 5px 0 0; color: var(--accent-text); font-weight: 700; font-size: .92rem; }
+  .exp-desc { margin: 9px 0 0; color: var(--fg-dim); font-size: .92rem; }
+  .exp-desc b { color: var(--fg); font-weight: 700; }
+
   /* ---------- section ---------- */
   section { padding: 48px 0; }
   .section-head { margin-bottom: 26px; }
@@ -395,6 +422,8 @@
     .contribs { grid-template-columns: 1fr; }
     header.hero { padding: 52px 0 30px; }
     .project { padding: 24px 20px; }
+    .exp-item { grid-template-columns: 1fr; gap: 4px; }
+    .exp-when { padding-top: 0; }
   }
 
   /* ===== 인쇄 / PDF 내보내기 (A4) ===== */
@@ -545,6 +574,24 @@
       <span class="tag">Google Sheet 데이터 파이프라인</span>
       <span class="tag">IAP</span>
       <span class="tag">Git / GitHub</span>
+    </div>
+  </section>
+
+  <!-- ============ 경력 ============ -->
+  <section id="experience" class="reveal">
+    <div class="section-head">
+      <p class="eyebrow">Experience</p>
+      <h2>경력</h2>
+    </div>
+    <div class="exp">
+      <div class="exp-item">
+        <div class="exp-when">2026.04 – 현재</div>
+        <div class="exp-body">
+          <h3 class="exp-role">Unity 게임 클라이언트 개발자</h3>
+          <p class="exp-org">팀스파르타 · SpartaGames</p>
+          <p class="exp-desc">라이브 서비스 <b>MadRaccoon</b> · <b>WiggleDefender</b>의 콘텐츠 개발과 운영·안정화를 담당하고 있습니다.</p>
+        </div>
+      </div>
     </div>
   </section>
 
